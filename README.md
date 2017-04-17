@@ -1,6 +1,8 @@
 # ShantaeText
 Text Injecting and Extracting Software for Shantae on GBC.
 
+Works with the USA version of the game.
+
 The Extractor outputs a file named textBank.txt in the same folder of the .exe, which can be easily edited.
 
 The Injector inserts in the ROM the edited textBank.txt file.
