@@ -106,20 +106,42 @@ namespace WindowsFormsApplication2
                 {
                     return 0xFE;
                 }
+                int alpha = memblock[Pointer] + (memblock[Pointer + 1] << 8);
                 Temp.Position = (memblock[Pointer] + (memblock[Pointer + 1] << 8)) + ((((Pointer - 0xA0000) / 0x4000)-1) * 0x4000)+0xA0000;
-                int a = 0;
-                while ((memblock[Temp.Position + a] != 0xFF) && (memblock[Temp.Position + a] != 0x80))
+                if (Temp.Position < Temp.Pointer)
                 {
-                    a++;
+                    char[] phrase2 = text[u + 1].ToArray();
+                    int Pointer2 = 0;
+                    if (phrase2[0] == '{')
+                    {
+                        Pointer2 = (ConvertCharToHex(phrase2[1]) << 12) + (ConvertCharToHex(phrase2[2]) << 8) + (ConvertCharToHex(phrase2[3]) << 4) + ConvertCharToHex(phrase2[4]) + 0xA0000;
+                    }
+                    if (((memblock[Temp.Pointer + 2] == 0x28) || (memblock[Temp.Pointer + 2] == 0x29) || (memblock[Temp.Pointer + 2] == 0x2A)) && (Temp.Pointer + 2 != Pointer2))
+                        Temp.Position = ((alpha - 0x4000) + (0xA0000 + (0x4000 * (memblock[Temp.Pointer + 2] - 0x28))));
                 }
-                if (memblock[Temp.Position + a] == 0xFF)
-                    if (memblock[Temp.Position + a + 1] == 0x00)
-                        a += 2;
-                    else a++;
+                if (Temp.Pointer / 0x4000 == Temp.Position / 0x4000)
+                {
+                    int a = 0;
+                    while ((memblock[Temp.Position + a] != 0xFF) && (memblock[Temp.Position + a] != 0x80))
+                    {
+                        a++;
+                    }
+                    if (memblock[Temp.Position + a] == 0xFF)
+                        if (memblock[Temp.Position + a + 1] == 0x00)
+                            a += 2;
+                        else a++;
+                    else
+                        a++;
+                    Temp.Length = a;
+                    TextRel.Add(Temp);
+                }
                 else
-                    a++;
-                Temp.Length = a;
-                TextRel.Add(Temp);
+                {
+                    if ((memblock[Pointer + 2] == 0x28) || (memblock[Pointer + 2] == 0x29) || (memblock[Pointer + 2] == 0x2A))
+                        memblock[Pointer + 2] = (byte)(((Pointer - 0xA0000) / 0x4000) + 0x28);
+                        Temp.Length = 0;
+                    TextRel.Add(Temp);
+                }
             }
             int Begin = 0x4000;
             int o = 0;
@@ -176,7 +198,13 @@ namespace WindowsFormsApplication2
                     {
                         if (phrase[g] == '[')
                         {
-                            if (phrase[g + 1] == 'N')
+                            if(phrase[g + 1]== 'B')
+                            {
+                                Temp.Add(0x20);
+                                Temp.Add(0x20);
+                                g += 6;
+                            }
+                            else if (phrase[g + 1] == 'N')
                             {
                                 Temp.Add(0x9C);
                                 Temp.Add((byte)ConvertCharToHex(phrase[g + 5]));
@@ -351,6 +379,7 @@ namespace WindowsFormsApplication2
             while (Begin < 0xABFFF)
             {
                 List<int> Save = new List<int>();
+                List<int> Diff = new List<int>();
                 while (((memblock[Begin] != 0xFF) && (memblock[Begin + 1] != 0xFF)) || ((memblock[Begin] == 0xFF) && (memblock[Begin - 1] == 0x00) && (memblock[Begin + 1] != 0xFF)))
                 {
                     Phrase = new List<char>();
@@ -360,6 +389,7 @@ namespace WindowsFormsApplication2
                         Begin = 0xA8F22;
                     if (Begin == 0xA772A)
                         Begin = 0xA8034;
+                    int alpha = memblock[Begin] + (memblock[Begin + 1] << 8);
                     Address = memblock[Begin] + 0xA0000 + (memblock[Begin + 1] << 8) + (0x4000 * (((Begin-0xA0000) / 0x4000)-1));
                     a = 0;
                     if ((Address < 0xABFFF) && (Address > Begin))
@@ -377,7 +407,7 @@ namespace WindowsFormsApplication2
                         Phrase.Add(':');
                         while ((memblock[Address + a] != 0xFF) && (memblock[Address + a] != 0x80))
                         {
-                            if ((memblock[Address + a] != 0x5B) && (memblock[Address + a] != 0x9C))
+                            if ((memblock[Address + a] != 0x5B) && (memblock[Address + a] != 0x9C)&&(!((memblock[Address+a]==0x20)&&(memblock[Address+a+1]==0x20))))
                             {
                                 Phrase.Add((char)memblock[Address + a]);
                                 a++;
@@ -393,7 +423,7 @@ namespace WindowsFormsApplication2
                                 Phrase.Add(']');
                                 a += 2;
                             }
-                            else
+                            else if(memblock[Address + a]==0x9C)
                             {
                                 Phrase.Add('[');
                                 Phrase.Add('N');
@@ -403,6 +433,17 @@ namespace WindowsFormsApplication2
                                 Phrase.Add(ConvertHexToChar(memblock[Address + a + 1]));
                                 Phrase.Add(']');
                                 a += 3;
+                            }
+                            else
+                            {
+                                Phrase.Add('[');
+                                Phrase.Add('B');
+                                Phrase.Add('R');
+                                Phrase.Add('E');
+                                Phrase.Add('A');
+                                Phrase.Add('K');
+                                Phrase.Add(']');
+                                a += 2;
                             }
                         }
                         if (memblock[Address + a] == 0xFF)
@@ -427,6 +468,88 @@ namespace WindowsFormsApplication2
                         }
                         Phrases.Add(string.Concat(Phrase));
                     }
+                    else
+                    {
+                        if (((Begin + 2) != Address) && ((memblock[Begin + 2] == 0x28) || (memblock[Begin + 2] == 0x29) || (memblock[Begin + 2] == 0x2A)))
+                        {
+                            Address = (alpha - 0x4000) + (0xA0000 + ((memblock[Begin + 2] - 0x28) * 0x4000));
+                            if (Address / 0x4000 != Begin / 0x4000)
+                                Diff.Add(Save.Count);
+                            char e = ConvertHexToChar((Begin >> 12) & 0xF);
+                            Phrase.Add('{');
+                            Phrase.Add(e);
+                            e = ConvertHexToChar((Begin >> 8) & 0xF);
+                            Phrase.Add(e);
+                            e = ConvertHexToChar((Begin >> 4) & 0xF);
+                            Phrase.Add(e);
+                            e = ConvertHexToChar(Begin & 0xF);
+                            Phrase.Add(e);
+                            Phrase.Add('}');
+                            Phrase.Add(':');
+                            while ((memblock[Address + a] != 0xFF) && (memblock[Address + a] != 0x80))
+                            {
+                                if ((memblock[Address + a] != 0x5B) && (memblock[Address + a] != 0x9C) && (!((memblock[Address + a] == 0x20) && (memblock[Address + a + 1] == 0x20))))
+                                {
+                                    Phrase.Add((char)memblock[Address + a]);
+                                    a++;
+                                }
+                                else if (memblock[Address + a] == 0x5B)
+                                {
+                                    Phrase.Add((char)memblock[Address + a]);
+                                    Phrase.Add('E');
+                                    Phrase.Add('F');
+                                    Phrase.Add('F');
+                                    Phrase.Add('0');
+                                    Phrase.Add((char)memblock[Address + a + 1]);
+                                    Phrase.Add(']');
+                                    a += 2;
+                                }
+                                else if (memblock[Address + a] == 0x9C)
+                                {
+                                    Phrase.Add('[');
+                                    Phrase.Add('N');
+                                    Phrase.Add('U');
+                                    Phrase.Add('M');
+                                    Phrase.Add('0');
+                                    Phrase.Add(ConvertHexToChar(memblock[Address + a + 1]));
+                                    Phrase.Add(']');
+                                    a += 3;
+                                }
+                                else
+                                {
+                                    Phrase.Add('[');
+                                    Phrase.Add('B');
+                                    Phrase.Add('R');
+                                    Phrase.Add('E');
+                                    Phrase.Add('A');
+                                    Phrase.Add('K');
+                                    Phrase.Add(']');
+                                    a += 2;
+                                }
+                            }
+                            if (memblock[Address + a] == 0xFF)
+                            {
+                                Phrase.Add('[');
+                                Phrase.Add('E');
+                                Phrase.Add('N');
+                                Phrase.Add('D');
+                                Phrase.Add('F');
+                                Phrase.Add('F');
+                                Phrase.Add(']');
+                            }
+                            else
+                            {
+                                Phrase.Add('[');
+                                Phrase.Add('E');
+                                Phrase.Add('N');
+                                Phrase.Add('D');
+                                Phrase.Add('8');
+                                Phrase.Add('0');
+                                Phrase.Add(']');
+                            }
+                            Phrases.Add(string.Concat(Phrase));
+                        }
+                    }
                     if (Address == Begin + 2)
                     {
                         if (memblock[Address + a] == 0xFF)
@@ -443,7 +566,7 @@ namespace WindowsFormsApplication2
                             Save.Add(Address);
                         int maxSave = 0;
                         for (int u = 0; u < Save.Count(); u++)
-                            if ((maxSave < Save[u]) && ((memblock[Save[u]] != 0xFF) && (memblock[Save[u]] != 0x80)))
+                            if ((maxSave < Save[u]) && ((memblock[Save[u]] != 0xFF) && (memblock[Save[u]] != 0x80))&&(!Diff.Exists(x=>x==u)))
                                 maxSave = Save[u];
                         for (int u = 0; u < Save.Count(); u++)
                             if (Save[u] == Begin)
