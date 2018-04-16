@@ -79,7 +79,7 @@ namespace WindowsFormsApplication2
                     int u=TextHandler.Inject(Path3);
                     if (u == 0) MessageBox.Show("Text Injected.", "Success");
                     else if (u == 0xFE) MessageBox.Show("Error in Text Format.", "Error");
-                    else MessageBox.Show("Unknown Error.", "Error");
+                    else MessageBox.Show("Error.Bank "+u.ToString()+" is too big!", "Error");
                 }
                 else MessageBox.Show("Is this a Shantae ROM?", "Error");
             }

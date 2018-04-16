@@ -34,7 +34,7 @@ namespace WindowsFormsApplication2
             }
         static int SearchClosest(int a, List<int> b)
         {
-            int o = 0, u = 0xFFFFFF;
+            int o = 0xFFFFFF, u = 0xFFFFFF;
             for (int g = 0; g < b.Count; g++)
             {
                 if ((a <= b[g]) && (b[g] < u))
@@ -304,6 +304,8 @@ namespace WindowsFormsApplication2
                     if (TextFromChar[u].Flag[Exceeding[u][i]] == 0)
                     {
                         int l = SearchClosest(TextFromChar[u].BytesChar[Exceeding[u][i]].Count, FreeSpace[u].Length);
+                        if (l == 0xFFFFFF)
+                            return (-1 * (u+1));
                         for (int j = 0; j < TextFromChar[u].BytesChar[Exceeding[u][i]].Count; j++)
                             memblock[FreeSpace[u].Position[l] + j] = TextFromChar[u].BytesChar[Exceeding[u][i]][j];
                         memblock[TextFromChar[u].Pointers[Exceeding[u][i]]] = (byte)((FreeSpace[u].Position[l] - (0x4000 * (u-1))) & 0xFF);
