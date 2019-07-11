@@ -82,7 +82,7 @@ namespace WindowsFormsApplication2
                 e = 0xF;
             return e;
         }
-        public static int Inject(string Path2)
+        public static int Inject(string Path2, Lookup<char, int> CharLookup)
         {
             string Path = "textBank.txt";
             string[] text = File.ReadAllLines(Path);
@@ -198,7 +198,7 @@ namespace WindowsFormsApplication2
                     {
                         if (phrase[g] == '[')
                         {
-                            if(phrase[g + 1]== 'B')
+                            if (phrase[g + 1] == 'B')
                             {
                                 Temp.Add(0x20);
                                 Temp.Add(0x20);
@@ -228,6 +228,10 @@ namespace WindowsFormsApplication2
                                 Temp.Add(0x80);
                                 g += 6;
                             }
+                        }
+                        else if (CharLookup != null && CharLookup.Contains(phrase[g]))
+                        {
+                            Temp.Add((Byte)CharLookup[phrase[g]].First());
                         }
                         else
                             Temp.Add((Byte)phrase[g]);

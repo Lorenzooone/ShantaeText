@@ -33,12 +33,15 @@
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.openROMToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.closeROMToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadLocalizationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.dlgOpenRom = new System.Windows.Forms.OpenFileDialog();
+            this.dlgLoadLocalization = new System.Windows.Forms.OpenFileDialog();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
+            this.clearLocalizationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripContainer1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -63,7 +66,9 @@
             // 
             this.toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openROMToolStripMenuItem,
-            this.closeROMToolStripMenuItem});
+            this.closeROMToolStripMenuItem,
+            this.loadLocalizationToolStripMenuItem,
+            this.clearLocalizationToolStripMenuItem});
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
             this.toolStripMenuItem1.Size = new System.Drawing.Size(37, 20);
             this.toolStripMenuItem1.Text = "&File";
@@ -72,16 +77,23 @@
             // openROMToolStripMenuItem
             // 
             this.openROMToolStripMenuItem.Name = "openROMToolStripMenuItem";
-            this.openROMToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.openROMToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.openROMToolStripMenuItem.Text = "&Open ROM";
             this.openROMToolStripMenuItem.Click += new System.EventHandler(this.openROMToolStripMenuItem_Click);
             // 
             // closeROMToolStripMenuItem
             // 
             this.closeROMToolStripMenuItem.Name = "closeROMToolStripMenuItem";
-            this.closeROMToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.closeROMToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.closeROMToolStripMenuItem.Text = "&Close ROM";
             this.closeROMToolStripMenuItem.Click += new System.EventHandler(this.closeROMToolStripMenuItem_Click);
+            // 
+            // loadLocalizationToolStripMenuItem
+            // 
+            this.loadLocalizationToolStripMenuItem.Name = "loadLocalizationToolStripMenuItem";
+            this.loadLocalizationToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.loadLocalizationToolStripMenuItem.Text = "Load Localization";
+            this.loadLocalizationToolStripMenuItem.Click += new System.EventHandler(this.loadLocalizationToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
@@ -95,7 +107,7 @@
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.aboutToolStripMenuItem.Text = "&About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
@@ -116,6 +128,10 @@
             // 
             this.dlgOpenRom.Filter = "GBC files|*.gbc|All files|*.*";
             // 
+            // dlgLoadLocalization
+            // 
+            this.dlgLoadLocalization.Filter = "TXT files|*.txt|All files|*.*";
+            // 
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(109, 50);
@@ -135,6 +151,13 @@
             this.button2.Text = "Inject Text";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // clearLocalizationToolStripMenuItem
+            // 
+            this.clearLocalizationToolStripMenuItem.Name = "clearLocalizationToolStripMenuItem";
+            this.clearLocalizationToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.clearLocalizationToolStripMenuItem.Text = "Clear Localization";
+            this.clearLocalizationToolStripMenuItem.Click += new System.EventHandler(this.clearLocalizationToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -168,9 +191,12 @@
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.OpenFileDialog dlgOpenRom;
+        private System.Windows.Forms.OpenFileDialog dlgLoadLocalization;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.ToolStripMenuItem loadLocalizationToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem clearLocalizationToolStripMenuItem;
     }
 }
 
