@@ -16,7 +16,7 @@ Missing text can be found around these locations: 0x10100, 0x285AB, 0x48AD0, 0x4
 Symbols can be paired up to a numeric value using the Localization table for the Injection phase. An example localization table is provided as Local.txt. It can be loaded up using Load Localization in the File dropdown menu.
 
 In order to convert letters properly, you must put the character, a space and the tile number you want it to be converted to.
-"è 61" will convert all instances of "è" in the textBank to tile number "61" when converting.
+"è 61" in Local.txt (if loaded) will convert all instances of "è" in the textBank to tile number "61" when converting.
 
 The textBank and the Localization table MUST have the same encoding, or thing will get weird.
 
