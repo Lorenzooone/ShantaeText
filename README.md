@@ -26,4 +26,5 @@ If prompted the error "Error. Bank -x is too big" while injecting, it means your
 
 The shop's text "OUT" that appears when an unique item has already been purchased is hardcoded.
 In particular:
+
 0x6B2D6 is the O, 0x6B2DB is the U and 0x6B2E0 is the T.
